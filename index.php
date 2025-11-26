@@ -21,8 +21,8 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             overflow-y: auto;
             padding: 0;
             line-height: 1.6;
+            margin: 0;
         }
-        
         .navbar {
             background: rgba(29, 45, 70, 0.95);
             padding: 15px 5%;
@@ -35,15 +35,16 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .navbar .logo { font-size: 24px; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; }
-        .navbar .nav-links a { color: #ccc; text-decoration: none; margin-left: 25px; font-weight: 500; font-size: 14px; transition: 0.3s; }
-        .navbar .nav-links a:hover { color: white; }
+        .navbar .logo { font-size: 24px; font-weight: bold; color: white; display: flex; align-items: center; gap: 10px; z-index: 1001; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: #ccc; text-decoration: none; margin-left: 25px; font-weight: 500; font-size: 14px; transition: 0.3s; }
+        .nav-links a:hover { color: white; }
         .btn-nav { background: var(--primary); padding: 8px 20px; border-radius: 20px; color: white !important; }
-
+        .menu-toggle { display: none; font-size: 24px; color: white; cursor: pointer; z-index: 1001; }
         .hero {
             background: linear-gradient(135deg, var(--sidebar-bg) 0%, #2a4066 100%);
             color: white;
-            padding: 100px 5% 150px;
+            padding: 120px 5% 150px;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -57,84 +58,61 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
         .btn-cta {
             padding: 15px 40px; border-radius: 50px; font-weight: bold; font-size: 16px;
             text-decoration: none; display: inline-block; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            margin: 5px;
         }
         .btn-cta-primary { background: #4e73df; color: white; margin-right: 15px; }
         .btn-cta-primary:hover { background: #375aeb; transform: translateY(-3px); }
         .btn-cta-outline { background: transparent; border: 2px solid rgba(255,255,255,0.3); color: white; }
         .btn-cta-outline:hover { background: white; color: var(--sidebar-bg); }
-
         section { padding: 80px 5%; }
         .section-title { text-align: center; margin-bottom: 60px; }
         .section-title h2 { font-size: 2.5rem; color: #333; margin-bottom: 10px; }
         .section-title p { color: #666; max-width: 600px; margin: 0 auto; }
-
+        @media (max-width: 768px) {
+            .menu-toggle { display: block; }
+            .nav-links {
+                position: absolute;
+                top: 0; right: -100%;
+                background-color: var(--sidebar-bg);
+                height: 100vh;
+                width: 70%;
+                flex-direction: column;
+                justify-content: center;
+                transition: 0.4s;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+                padding-top: 60px;
+            }
+            .nav-links.active { right: 0; }
+            .nav-links a { margin: 20px 0; font-size: 18px; margin-left: 0; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1rem; }
+            .btn-cta { display: block; width: 100%; margin: 10px 0; box-sizing: border-box; }
+            .btn-cta-primary { margin-right: 0; }
+            .features-grid { grid-template-columns: 1fr; }
+        }
         .steps-grid { display: flex; justify-content: center; gap: 30px; flex-wrap: wrap; }
-        .step-card {
-            flex: 1; min-width: 250px; max-width: 300px; text-align: center;
-            position: relative;
-        }
-        .step-icon {
-            width: 80px; height: 80px; background: #eef2f7; color: var(--primary);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 30px; margin: 0 auto 20px; position: relative; z-index: 2;
-        }
+        .step-card { flex: 1; min-width: 250px; max-width: 300px; text-align: center; position: relative; }
+        .step-icon { width: 80px; height: 80px; background: #eef2f7; color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 20px; position: relative; z-index: 2; }
         .step-card h3 { margin-bottom: 10px; color: #333; }
         .step-card p { font-size: 14px; color: #666; }
-
         .preview-section { background: #f8f9fa; }
-        .mockup-container {
-            display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; margin-top: 40px;
-        }
-        .phone-mockup {
-            width: 300px; height: 550px; background: white; border: 12px solid #333;
-            border-radius: 30px; position: relative; overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            display: flex; flex-direction: column;
-        }
-        .phone-notch {
-            width: 120px; height: 20px; background: #333;
-            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
-            border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10;
-        }
+        .mockup-container { display: flex; justify-content: center; gap: 50px; flex-wrap: wrap; margin-top: 40px; }
+        .phone-mockup { width: 300px; height: 550px; background: white; border: 12px solid #333; border-radius: 30px; position: relative; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.2); display: flex; flex-direction: column; }
+        .phone-notch { width: 120px; height: 20px; background: #333; position: absolute; top: 0; left: 50%; transform: translateX(-50%); border-bottom-left-radius: 15px; border-bottom-right-radius: 15px; z-index: 10; }
         .phone-screen { padding: 40px 20px 20px; flex: 1; background: #fff; overflow: hidden; }
         .mock-header { text-align: center; margin-bottom: 20px; }
         .mock-title { font-weight: bold; color: var(--primary); font-size: 18px; }
         .mock-subtitle { font-size: 12px; color: #888; }
-        .mock-input {
-            height: 35px; background: #f0f2f5; margin-bottom: 10px; border-radius: 5px;
-            width: 100%; border: 1px solid #ddd;
-        }
-        .mock-btn {
-            height: 40px; background: var(--primary); border-radius: 5px; width: 100%; margin-top: 10px;
-        }
-        .badge {
-            background: var(--accent); color: white; padding: 5px 15px; border-radius: 20px;
-            font-size: 12px; display: inline-block; margin-bottom: 15px;
-        }
-
-        .features-grid { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 30px; 
-        }
-
-        @media (max-width: 992px) {
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 600px) {
-            .features-grid { grid-template-columns: 1fr; } 
-        }
-
+        .mock-input { height: 35px; background: #f0f2f5; margin-bottom: 10px; border-radius: 5px; width: 100%; border: 1px solid #ddd; }
+        .mock-btn { height: 40px; background: var(--primary); border-radius: 5px; width: 100%; margin-top: 10px; }
+        .badge { background: var(--accent); color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; display: inline-block; margin-bottom: 15px; }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+        @media (max-width: 992px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 600px) { .features-grid { grid-template-columns: 1fr; } }
         .feature-item { display: flex; gap: 20px; align-items: flex-start; }
-        .feature-icon { 
-            min-width: 50px; height: 50px; background: rgba(56, 69, 137, 0.1); 
-            color: var(--primary); border-radius: 10px; display: flex; 
-            align-items: center; justify-content: center; font-size: 20px;
-        }
+        .feature-icon { min-width: 50px; height: 50px; background: rgba(56, 69, 137, 0.1); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .feature-text h4 { margin-bottom: 5px; color: #333; }
         .feature-text p { font-size: 14px; color: #666; }
-
-        /* FOOTER */
         footer { background: #1a1c23; color: #7a8099; padding: 60px 5% 30px; font-size: 14px; }
         .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; margin-bottom: 40px; }
         .footer-col h4 { color: white; margin-bottom: 20px; font-size: 18px; }
@@ -146,20 +124,21 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     </style>
 </head>
 <body class="landing-page">
-
     <nav class="navbar">
         <div class="logo">
             <i class="fas fa-book-open"></i> DigiTamu
         </div>
-        <div class="nav-links">
-            <a href="#cara-kerja">Cara Kerja</a>
-            <a href="#contoh">Contoh</a>
-            <a href="#fitur">Fitur</a>
+        <div class="menu-toggle" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="nav-links" id="navLinks">
+            <a href="#cara-kerja" onclick="toggleMenu()">Cara Kerja</a>
+            <a href="#contoh" onclick="toggleMenu()">Contoh</a>
+            <a href="#fitur" onclick="toggleMenu()">Fitur</a>
             <a href="login.php">Masuk</a>
             <a href="register.php" class="btn-nav">Daftar Sekarang</a>
         </div>
     </nav>
-
     <header class="hero">
         <h1>Buku Tamu Modern<br>untuk Acara Profesional</h1>
         <p>Solusi pencatatan kehadiran tamu secara real-time. Cocok untuk Pernikahan, Seminar, Wisuda, dan Rapat Instansi. Tanpa antre, tanpa kertas.</p>
@@ -168,7 +147,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             <a href="#contoh" class="btn-cta btn-cta-outline">Lihat Contoh</a>
         </div>
     </header>
-
     <section id="cara-kerja">
         <div class="section-title">
             <h2>Bagaimana Cara Kerjanya?</h2>
@@ -192,7 +170,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             </div>
         </div>
     </section>
-
     <section id="contoh" class="preview-section">
         <div class="section-title">
             <h2>Pilih Template Sesuai Kebutuhan</h2>
@@ -218,7 +195,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                     </div>
                 </div>
             </div>
-
             <div class="text-center">
                 <span class="badge" style="background: #28a745;">Template Seminar / Dinas</span>
                 <div class="phone-mockup">
@@ -240,7 +216,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             </div>
         </div>
     </section>
-
     <section id="fitur">
         <div class="section-title">
             <h2>Fitur Lengkap</h2>
@@ -268,7 +243,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                     <p>Fitur one-click print untuk mencetak rekap kehadiran tamu.</p>
                 </div>
             </div>
-
             <div class="feature-item">
                 <div class="feature-icon"><i class="fas fa-link"></i></div>
                 <div class="feature-text">
@@ -292,7 +266,6 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             </div>
         </div>
     </section>
-
     <footer>
         <div class="footer-grid">
             <div class="footer-col">
@@ -322,6 +295,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             &copy; 2025 DigiTamu Application. All rights reserved.
         </div>
     </footer>
-
+    <script>
+        function toggleMenu() {
+            var nav = document.getElementById("navLinks");
+            nav.classList.toggle("active");
+        }
+    </script>
 </body>
 </html>
