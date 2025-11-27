@@ -98,7 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="form-container-center">
         <div class="text-center">
             <h2 style="color: var(--primary); margin-bottom: 5px;">DigiTamu</h2>
-            <p>Masuk Administrator</p>
         </div>
         
         <?php if (!empty($error)): ?>

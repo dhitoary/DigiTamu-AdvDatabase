@@ -6,6 +6,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit;
 }
 
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
+    header("location: dashboard-admin.php");
+    exit;
+}
+
 $penyelenggara_id = $_SESSION['user_id']; 
 $nama_lengkap = $_SESSION['nama_lengkap'];
 ?>
