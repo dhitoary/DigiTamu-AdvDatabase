@@ -14,24 +14,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($username) || empty($password)) {
         $error = "Username dan password wajib diisi.";
     } else {
-        $sql = "SELECT penyelenggara_id, username, password, nama_lengkap FROM penyelenggara WHERE username = ?";
-        if ($stmt = $conn->prepare($sql)) {
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $stmt->store_result();
-            if ($stmt->num_rows == 1) {
-                $stmt->bind_result($penyelenggara_id, $db_username, $hashed_password, $nama_lengkap);
-                if ($stmt->fetch()) {
+        $user_found = false;
+        $user_id = 0;
+        $user_name = '';
+        $user_role = 'penyelenggara';
+        
+        $sql_admin = "SELECT admin_id, username, password, nama_lengkap FROM admin WHERE username = ?";
+        if ($stmt_admin = $conn->prepare($sql_admin)) {
+            $stmt_admin->bind_param("s", $username);
+            $stmt_admin->execute();
+            $stmt_admin->store_result();
+            
+            if ($stmt_admin->num_rows == 1) {
+                $stmt_admin->bind_result($admin_id, $db_username, $hashed_password, $nama_lengkap);
+                if ($stmt_admin->fetch()) {
                     if (password_verify($password, $hashed_password)) {
-                        $_SESSION['loggedin'] = true;
-                        $_SESSION['user_id'] = $penyelenggara_id;
-                        $_SESSION['nama_lengkap'] = $nama_lengkap;
-                        header("location: dashboard.php");
-                        exit;
-                    } else { $error = "Password salah."; }
+                        $user_found = true;
+                        $user_id = $admin_id;
+                        $user_name = $nama_lengkap;
+                        $user_role = 'admin';
+                    } else {
+                        $error = "Password salah.";
+                    }
                 }
-            } else { $error = "Username tidak ditemukan."; }
-            $stmt->close();
+            }
+            $stmt_admin->close();
+        }
+        
+        if (!$user_found && empty($error)) {
+            $sql_penyelenggara = "SELECT penyelenggara_id, username, password, nama_lengkap FROM penyelenggara WHERE username = ?";
+            if ($stmt_penyelenggara = $conn->prepare($sql_penyelenggara)) {
+                $stmt_penyelenggara->bind_param("s", $username);
+                $stmt_penyelenggara->execute();
+                $stmt_penyelenggara->store_result();
+                
+                if ($stmt_penyelenggara->num_rows == 1) {
+                    $stmt_penyelenggara->bind_result($penyelenggara_id, $db_username, $hashed_password, $nama_lengkap);
+                    if ($stmt_penyelenggara->fetch()) {
+                        if (password_verify($password, $hashed_password)) {
+                            $user_found = true;
+                            $user_id = $penyelenggara_id;
+                            $user_name = $nama_lengkap;
+                            $user_role = 'penyelenggara';
+                        } else {
+                            $error = "Password salah.";
+                        }
+                    }
+                } else {
+                    $error = "Username tidak ditemukan.";
+                }
+                $stmt_penyelenggara->close();
+            }
+        }
+        
+        if ($user_found) {
+            $_SESSION['loggedin'] = true;
+            $_SESSION['user_id'] = $user_id;
+            $_SESSION['nama_lengkap'] = $user_name;
+            $_SESSION['role'] = $user_role;
+            
+            if ($user_role === 'admin') {
+                header("location: dashboard-admin.php");
+            } else {
+                header("location: dashboard.php");
+            }
+            exit;
         }
     }
     $conn->close();
